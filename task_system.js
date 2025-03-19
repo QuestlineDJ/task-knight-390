@@ -11,7 +11,7 @@ class Task {
    create_time;
 
    constructor(name, priority, due_date) {
-      this.taskid = 0; // TODO: see if UUIDs should be used
+      this.taskid = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER); // TODO: see if UUIDs should be used
       this.name = name;
       this.priority = priority;
       this.due_date = due_date;
@@ -37,29 +37,30 @@ class Task {
       }
    }
 
-   static via_id(task, taskid) {
-      return task.taskid == taskid;
+   static via_id(task) {
+      return task.taskid == this;
    }
 }
 
 class TaskManager {
-   const complete_history = 100;
+   complete_history = 100;
 
-   active_tasks = [];
-   complete_tasks = [];
+   active_tasks = new Array();
+   complete_tasks = new Array();
 
    add_task() {
       //TODO: retrive information from form
 
-      active_tasks.push(new Task("Hello World", 0, get_time()));
+      this.active_tasks.push(new Task("Hello World", 0, get_time()));
       return 0;
    }
 
    edit_task(taskid) {
-      task = active_tasks.find(Task.via_id, taskid);
+      var task = this.active_tasks.find(Task.via_id, taskid);
       if ( task === undefined ) {
          return 1;
       }
+
 
       // TODO: retrive information from form
 
@@ -71,38 +72,38 @@ class TaskManager {
    }
 
    delete_task(taskid) {
-      task_index = active_tasks.findIndex(Task.via_id, taskid);
+      var task_index = this.active_tasks.findIndex(Task.via_id, taskid);
       if ( task_index == -1 )
       {
          return 1;
       }
 
-      active_tasks.splice(task_index, 1);
+      this.active_tasks.splice(task_index, 1);
       return 0;
 
    }
 
    complete_task(taskid) {
-      task_index = active_tasks.findIndex(Task.via_id, taskid);
+      var task_index = this.active_tasks.findIndex(Task.via_id, taskid);
       if ( task_index == -1 )
       {
          return 1;
       }
 
-      complete_task = active_tasks.splice(task_index, 1);
+      var completed_task = this.active_tasks.splice(task_index, 1);
 
-      complete_tasks.push(complete_task);
+      this.complete_tasks.push(completed_task);
 
-      if ( complete_tasks.length() > complete_history )
+      if ( this.complete_tasks.length > this.complete_history )
       {
-         complete_tasks.shift();
+         this.complete_tasks.shift();
       }
 
       return 0;
    }
 
    display_task(taskid) {
-      task = active_tasks.find(Task.via_ida, taskid);
+      var task = this.active_tasks.find(Task.via_ida(taskid));
       if ( task === undefined )
       {
          return 1;
